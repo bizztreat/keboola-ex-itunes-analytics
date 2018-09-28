@@ -22,7 +22,7 @@ module.exports = async (dataDir) => {
         var options
         var values = []
 
-        console.log("Version: 0.1.0 alfa")
+        console.log("Version: 0.1.1 alfa")
 
         // await generateManifests(outputFilesDir)
         process.exit(constants.EXIT_STATUS_SUCCESS)
