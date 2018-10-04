@@ -26,7 +26,7 @@ module.exports = async (dataDir) => {
         var options
         var values = []
 
-        console.log("Version: 0.2.1")
+        console.log("Version: 0.2.2")
         // console.log(`username: ${config.username}`)
         // console.log(`password: ${config.password}`)
         console.log(`changedInLastDays: ${config.changedInLastDays}`)
