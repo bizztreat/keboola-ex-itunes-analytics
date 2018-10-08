@@ -58,13 +58,29 @@ function changeProvider(instance, providerId) {
     })
 }
 
-async function getApps(instance) {
+async function getApps(instance, providerId) {
     return new Promise((resolve, reject) => {
         instance.getApps(function (error, result) {
             if (error) {
                 reject(error)
             } else {
-                resolve(result.results)
+                var values = []
+                values = result.results.map(function (p, i) {
+                    return ({
+                        name: p.name,
+                        adamId: p.adamId,
+                        isBundle: p.isBundle,
+                        iconUrl: p.iconUrl,
+                        assetToken: p.assetToken,
+                        platforms: p.platforms,
+                        isEnabled: p.isEnabled,
+                        appOptInRate: p.appOptInRate,
+                        preOrderInfo: p.preOrderInfo,
+                        providerId: providerId
+                    });
+                });
+                
+                resolve(values)
             }
         })
     })

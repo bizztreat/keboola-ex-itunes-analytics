@@ -37,7 +37,7 @@ module.exports = async (dataDir) => {
         var provider = await getCurrentProvider(connector)
         console.log(provider)
 
-        var apps = await getApps(connector)
+        var apps = await getApps(connector, provider.providerId)
 
         for (var i in apps) {
             if(i > 0) continue
