@@ -34,11 +34,6 @@ function getConfig(configPath, fileExist = isThere) {
  */
 function parseConfiguration(configObject = {}) {
   try {
-    // const apiURI = configObject.get('parameters:apiURI')
-    // if (_.isUndefined(apiURI) || _.isEmpty(apiURI)) {
-    //   throw new Error('Parameter apiURI is empty/not defined')
-    // }
-
     const username = configObject.get('parameters:#username')
     if (_.isUndefined(username) || _.isEmpty(username)) {
       throw new Error('Parameter #username is empty/not defined')
@@ -49,50 +44,29 @@ function parseConfiguration(configObject = {}) {
       throw new Error('Parameter #password is empty/not defined')
     }
 
-    // const granularity = !_.isUndefined(configObject.get('parameters:granularity'))
-    //   ? configObject.get('parameters:granularity')
-    //   : DATA_GRANULARITY_DEFAULT
-
-    // const measurementId = configObject.get('parameters:measurementId')
-    // if (_.isUndefined(measurementId) || _.isEmpty(measurementId)) {
-    //   throw new Error('Field measurementId is empty/not defined')
-    // }
-    // const measurementId = !_.isUndefined(configObject.get('parameters:measurementId'))
-    // ? configObject.get('parameters:measurementId')
-    // : null
-
-    // const changedIn = configObject.get('parameters:changedInLast')
-    // if (_.isUndefined(changedIn) || _.isEmpty(changedIn)) {
-    //   throw new Error('Field changedInLast is empty/not defined')
-    // }
-    const changedInLastDays = !_.isUndefined(configObject.get('parameters:changedInLastDays'))
-    ? configObject.get('parameters:changedInLastDays')
-    : CHANGED_IN_LAST_DEFAULT
-
-    if(!_.isNumber(parseInt(changedInLastDays))) {
-      throw new Error('Field changedInLastDays is not a number format!')
+    const metrics = configObject.get('parameters:metrics')
+    if (_.isUndefined(metrics) || _.isEmpty(metrics)) {
+      throw new Error('Field metrics is empty/not defined')
     }
 
-    // const unitOfTime = changedIn.slice(-1)
-    // const allowedUnits = ["m", "h", "d", "M"]
-    // if(allowedUnits.indexOf(unitOfTime) == -1) {
-    //   throw new Error('Field changedInLast contains unknown unit of time. Use one of these [m, h, d, M]')
-    // }
+    const providerId = configObject.get('parameters:providerId')
+    const providers = !_.isUndefined(providerId) && !_.isEmpty(providerId)
+      ? providerId
+      : null
 
-    // console.log("-"+configObject.get('parameters:metadocuments')+"-")
+    const changedInLastDays = !_.isUndefined(configObject.get('parameters:changedInLastDays'))
+      ? configObject.get('parameters:changedInLastDays')
+      : CHANGED_IN_LAST_DEFAULT
 
-    // const metadocuments = !_.isUndefined(configObject.get('parameters:metadocuments'))
-    // ? configObject.get('parameters:metadocuments')
-    // : false
-
-    // const changedInLast = {
-    //   amount: amount,
-    //   unitOfTime: unitOfTime
-    // }
+    if (!_.isNumber(parseInt(changedInLastDays))) {
+      throw new Error('Field changedInLastDays is not a number format!')
+    }
 
     return {
       username,
       password,
+      providers,
+      metrics,
       changedInLastDays
     }
   } catch (error) {

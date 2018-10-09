@@ -1,13 +1,11 @@
 const _ = require('lodash')
 const path = require('path')
-const rp = require('request-promise')
-const moment = require('moment')
 const constants = require('./constants')
 const itc = require('itunesconnectanalytics')
 const AnalyticsQuery = itc.AnalyticsQuery
 const { getConfig, parseConfiguration } = require('./helpers/configHelper')
 const { generateCsvFile, generateManifests } = require('./helpers/csvHelper')
-const { getInstance, getCurrentProvider, getApps, doQuery } = require('./helpers/callerHelper')
+const { getInstance, getCurrentProvider, getAllProviders, changeProvider, getApps, doQuery } = require('./helpers/callerHelper')
 
 /**
  * This function is the main program.
@@ -23,35 +21,54 @@ module.exports = async (dataDir) => {
 
     try {
         const config = parseConfiguration(getConfig(configFile))
-        var options
+        var apps = []
         var values = []
 
-        console.log("Version: 0.2.2")
-        // console.log(`username: ${config.username}`)
-        // console.log(`password: ${config.password}`)
-        console.log(`changedInLastDays: ${config.changedInLastDays}`)
+        console.log("Version: 0.3.1")
+        console.log(`Changed In Last ${config.changedInLastDays} Days.`)
+        console.log(`Provider(s): ${config.providers}`)
+        console.log(`Metric(s): ${config.metrics}`)
 
         // login
         var connector = await getInstance(config.username, config.password)
+        var currentProvider = await getCurrentProvider(connector)
 
-        var provider = await getCurrentProvider(connector)
-        console.log(provider)
+        var providers = config.providers
+        if (_.isNull(providers)) {
+            providers = await getAllProviders(connector)
+        }
 
-        var apps = await getApps(connector, provider.providerId)
+        for (const i in providers) {
+            var providerId = providers[i]
+            // console.log(JSON.stringify(providerId, null, 2))
 
-        for (var i in apps) {
-            if(i > 0) continue
-            var app = apps[i];
-            console.log("App (" + app.adamId + " " + app.name + ") processing.")
+            if (providerId == currentProvider.providerId) {
+                // console.log("match")
+            } else {
+                // console.log("not match")
+                await changeProvider(connector, providerId)
+                currentProvider = await getCurrentProvider(connector)
+            }
 
-            var query = AnalyticsQuery.metrics(app.adamId, {
-                measures: [itc.measures.units,itc.measures.installs],
-            }).time(config.changedInLastDays, 'days');
+            console.log("currentProvider: " + JSON.stringify(currentProvider, null, 2))
 
-            var result = await doQuery(connector, query)
-            values = values.concat(result)
+            var pApps = await getApps(connector, currentProvider.providerId)
+            apps = apps.concat(pApps)
 
-            console.log("-------")
+            for (var j in pApps) {
+                if (j > 0) continue
+                var app = pApps[j];
+                console.log("App (" + app.adamId + " " + app.name + ") processing ...")
+
+                var query = AnalyticsQuery.metrics(app.adamId, {
+                    measures: config.metrics,
+                }).time(config.changedInLastDays, 'days');
+
+                var result = await doQuery(connector, query)
+                values = values.concat(result)
+
+                console.log("-------")
+            }
         }
 
         // OUTPUT
@@ -60,7 +77,7 @@ module.exports = async (dataDir) => {
         console.log('Data has been read successfully!')
 
         await generateManifests(outputFilesDir)
-        //process.exit(constants.EXIT_STATUS_SUCCESS)
+        process.exit(constants.EXIT_STATUS_SUCCESS)
     } catch (error) {
         console.error(error.message ? error.message : error)
         process.exit(constants.EXIT_STATUS_FAILURE)

@@ -1,6 +1,4 @@
 const _ = require('lodash')
-const rp = require('request-promise')
-const moment = require('moment')
 const itc = require('itunesconnectanalytics')
 const Itunes = itc.Itunes
 const AnalyticsQuery = itc.AnalyticsQuery
@@ -11,11 +9,11 @@ const {
 module.exports = {
     getInstance,
     getCurrentProvider,
+    getAllProviders,
     changeProvider,
     getApps,
     doQuery
 }
-
 
 async function getInstance(username, password) {
     return new Promise((resolve, reject) => {
@@ -40,6 +38,21 @@ async function getCurrentProvider(instance) {
             } else {
                 var provider = { providerId: result.providerId, providerName: result.providerName }
                 resolve(provider)
+            }
+        })
+    })
+}
+
+async function getAllProviders(instance) {
+    return new Promise((resolve, reject) => {
+        instance.getUserInfo(function (error, result) {
+            if (error) {
+                reject(error)
+            } else {
+                var providers = result.contentProviders.map(function (item) {
+                    return item.providerId
+                });
+                resolve(providers)
             }
         })
     })
@@ -79,7 +92,7 @@ async function getApps(instance, providerId) {
                         providerId: providerId
                     });
                 });
-                
+
                 resolve(values)
             }
         })
@@ -105,7 +118,7 @@ async function doQuery(instance, query) {
 }
 
 /**
- * This function calls API and get all Measurements.
+ * This function xxxx
  *
  * @param {Object} options - an options object.
  * @returns {Object}
@@ -126,22 +139,9 @@ function parseData(response, options) {
                 appId: options.adamId,
             });
         });
-        
+
         values = values.concat(result)
     }
-
-    // var data = response.results[0].data
-    // //console.log(JSON.stringify(data, null, 2))
-
-    // values = data.map(function (p, i) {
-    //     var metricName = Object.keys(p)[1]
-    //     return ({
-    //         date: p.date,
-    //         metric: metricName,
-    //         value: p[metricName],
-    //         appId: options.adamId,
-    //     });
-    // });
 
     return values
 }
