@@ -24,7 +24,7 @@ module.exports = async (dataDir) => {
         var apps = []
         var values = []
 
-        console.log("Version: 0.3.1")
+        console.log("Version: 0.4.1")
         console.log(`Changed In Last ${config.changedInLastDays} Days.`)
         console.log(`Provider(s): ${config.providers}`)
         console.log(`Metric(s): ${config.metrics}`)
@@ -56,7 +56,7 @@ module.exports = async (dataDir) => {
             apps = apps.concat(pApps)
 
             for (var j in pApps) {
-                if (j > 0) continue
+                // if (j > 0) continue
                 var app = pApps[j];
                 console.log("App (" + app.adamId + " " + app.name + ") processing ...")
 
