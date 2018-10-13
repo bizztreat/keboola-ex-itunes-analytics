@@ -24,7 +24,7 @@ module.exports = async (dataDir) => {
         var apps = []
         var values = []
 
-        console.log("Version: 1.0.0")
+        console.log("Version: 1.0.1")
         console.log(`Changed In Last ${config.changedInLastDays} Days.`)
         console.log(`Provider(s): ${config.providers}`)
         console.log(`Metric(s): ${config.metrics}`)
@@ -38,13 +38,14 @@ module.exports = async (dataDir) => {
         //     providers = await getAllProviders(connector)
         // }
 
+        // console.log(JSON.stringify(providers, null, 2))
 
+        // for (const i in providers) {
+            var providerId = providers //providers[i]
+            console.log(JSON.stringify(providerId, null, 2))
 
-        for (const i in providers) {
-            var providerId = providers[i]
-            // console.log(JSON.stringify(providerId, null, 2))
-
-            if (providerId != currentProvider.providerId) {
+            if (providerId == currentProvider.providerId) {
+            } else {
                 await changeProvider(connector, providerId)
                 currentProvider = await getCurrentProvider(connector)
             }
@@ -66,9 +67,9 @@ module.exports = async (dataDir) => {
                 var result = await doQuery(connector, query)
                 values = values.concat(result)
 
-                console.log("-------")
+                // console.log("-------")
             }
-        }
+        // }
 
         // OUTPUT
         await generateCsvFile(outputFilesDir, `apps.csv`, apps)
