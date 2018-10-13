@@ -24,7 +24,7 @@ module.exports = async (dataDir) => {
         var apps = []
         var values = []
 
-        console.log("Version: 0.4.1")
+        console.log("Version: 1.0.0")
         console.log(`Changed In Last ${config.changedInLastDays} Days.`)
         console.log(`Provider(s): ${config.providers}`)
         console.log(`Metric(s): ${config.metrics}`)
@@ -34,18 +34,17 @@ module.exports = async (dataDir) => {
         var currentProvider = await getCurrentProvider(connector)
 
         var providers = config.providers
-        if (_.isNull(providers)) {
-            providers = await getAllProviders(connector)
-        }
+        // if (_.isNull(providers)) {
+        //     providers = await getAllProviders(connector)
+        // }
+
+
 
         for (const i in providers) {
             var providerId = providers[i]
             // console.log(JSON.stringify(providerId, null, 2))
 
-            if (providerId == currentProvider.providerId) {
-                // console.log("match")
-            } else {
-                // console.log("not match")
+            if (providerId != currentProvider.providerId) {
                 await changeProvider(connector, providerId)
                 currentProvider = await getCurrentProvider(connector)
             }

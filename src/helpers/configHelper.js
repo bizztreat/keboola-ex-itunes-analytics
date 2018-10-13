@@ -50,9 +50,13 @@ function parseConfiguration(configObject = {}) {
     }
 
     const providerId = configObject.get('parameters:providerId')
-    const providers = !_.isUndefined(providerId) && !_.isEmpty(providerId)
-      ? providerId
-      : null
+    if (_.isUndefined(providerId) || _.isEmpty(providerId)) {
+      throw new Error('Field providerId is empty/not defined')
+    }
+    const providers = providerId
+    // const providers = !_.isUndefined(providerId) && !_.isEmpty(providerId)
+    //   ? providerId
+    //   : null
 
     const changedInLastDays = !_.isUndefined(configObject.get('parameters:changedInLastDays'))
       ? configObject.get('parameters:changedInLastDays')
