@@ -2,6 +2,7 @@ const _ = require('lodash')
 const path = require('path')
 const constants = require('./constants')
 const itc = require('itunesconnectanalytics')
+var sleep = require('system-sleep');
 const AnalyticsQuery = itc.AnalyticsQuery
 const { getConfig, parseConfiguration } = require('./helpers/configHelper')
 const { generateCsvFile, generateManifests } = require('./helpers/csvHelper')
@@ -24,7 +25,7 @@ module.exports = async (dataDir) => {
         var apps = []
         var values = []
 
-        console.log("Version: 1.0.1")
+        console.log("Version: 1.1.0")
         console.log(`Changed In Last ${config.changedInLastDays} Days.`)
         console.log(`Provider(s): ${config.providers}`)
         console.log(`Metric(s): ${config.metrics}`)
@@ -32,6 +33,13 @@ module.exports = async (dataDir) => {
         // login
         var connector = await getInstance(config.username, config.password)
         var currentProvider = await getCurrentProvider(connector)
+
+        if(_.isUndefined(currentProvider.providerId)) {
+            console.error("WARNING: No provided received. Sleeping few seconds and relogin.")
+            sleep(5000)
+            connector = await getInstance(config.username, config.password)
+            currentProvider = await getCurrentProvider(connector)
+        }
 
         var providers = config.providers
         // if (_.isNull(providers)) {
@@ -42,17 +50,22 @@ module.exports = async (dataDir) => {
 
         // for (const i in providers) {
             var providerId = providers //providers[i]
-            console.log(JSON.stringify(providerId, null, 2))
+            //console.log(JSON.stringify(providerId, null, 2))
+            console.log("currentProvider: " + JSON.stringify(currentProvider, null, 2))
 
             if (providerId == currentProvider.providerId) {
             } else {
                 await changeProvider(connector, providerId)
                 currentProvider = await getCurrentProvider(connector)
+                console.log("currentProvider: " + JSON.stringify(currentProvider, null, 2))
             }
 
-            console.log("currentProvider: " + JSON.stringify(currentProvider, null, 2))
-
             var pApps = await getApps(connector, currentProvider.providerId)
+            if(_.isEmpty(pApps)) {
+                console.error("WARNING: No apps received. Sleeping few seconds and try again.")
+                sleep(3000)
+                pApps = await getApps(connector, currentProvider.providerId)
+            }
             apps = apps.concat(pApps)
 
             for (var j in pApps) {
