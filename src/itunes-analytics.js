@@ -25,7 +25,7 @@ module.exports = async (dataDir) => {
         var apps = []
         var values = []
 
-        console.log("Version: 1.1.0")
+        console.log("Version: 2.0.0")
         console.log(`Changed In Last ${config.changedInLastDays} Days.`)
         console.log(`Provider(s): ${config.providers}`)
         console.log(`Metric(s): ${config.metrics}`)

@@ -14,7 +14,7 @@
   "author": "David Chobotsky <david.chobotsky@bizztreat.com>",
   "license": "MIT",
   "dependencies": {
-    "itunesconnectanalytics": "^0.4.3",
+    "itunesconnectanalytics": "^0.4.4",
     "request": "^2.34",
     "request-promise": "^4.2.2",
     "moment": "^2.20.1",
