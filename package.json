@@ -14,16 +14,16 @@
   "author": "David Chobotsky <david.chobotsky@bizztreat.com>",
   "license": "MIT",
   "dependencies": {
-    "itunesconnectanalytics": "^0.4.4",
-    "request": "^2.34",
-    "request-promise": "^4.2.2",
-    "moment": "^2.20.1",
-    "fast-csv": "^2.4.1",
+    "fast-csv": "^4.3.6",
     "is-there": "^4.4.3",
-    "system-sleep": "^1.3.6",
+    "itunesconnectanalytics": "git+https://github.com/doguh/iTunesConnectAnalytics.git#599771ab343f5f7fd32d4559446d75e0d144bf5e",
     "json2csv": "^3.11.5",
     "jsonfile": "^4.0.0",
-    "lodash": "^4.17.11",
-    "nconf": "^0.9.1"
+    "lodash": "^4.17.20",
+    "moment": "^2.20.1",
+    "nconf": "^0.9.1",
+    "request": "^2.34",
+    "request-promise": "^4.2.2",
+    "system-sleep": "^1.3.6"
   }
 }
