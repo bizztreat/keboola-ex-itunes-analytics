@@ -49,7 +49,6 @@ async function getAllProviders(instance) {
             if (error) {
                 reject(error)
             } else {
-                console.log(result)
                 var providers = result.contentProviders.map(function (item) {
                     return item.providerId
                 });
