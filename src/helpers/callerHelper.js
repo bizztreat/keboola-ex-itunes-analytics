@@ -32,7 +32,7 @@ async function getInstance(username, password) {
 
 async function getCurrentProvider(instance) {
     return new Promise((resolve, reject) => {
-        instance.getUserInfo(function (error, result) {
+        instance.getAPIURL('https://analytics.itunes.apple.com/analytics/api/v1/settings/user-info', function (error, result) {
             if (error) {
                 reject(error)
             } else {
@@ -45,10 +45,11 @@ async function getCurrentProvider(instance) {
 
 async function getAllProviders(instance) {
     return new Promise((resolve, reject) => {
-        instance.getUserInfo(function (error, result) {
+        instance.getAPIURL('https://analytics.itunes.apple.com/analytics/api/v1/settings/user-info', function (error, result) {
             if (error) {
                 reject(error)
             } else {
+                console.log(result)
                 var providers = result.contentProviders.map(function (item) {
                     return item.providerId
                 });
