@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const itc = require('itunesconnectanalytics')
 const Itunes = itc.Itunes
+var sleep = require('system-sleep');
 const AnalyticsQuery = itc.AnalyticsQuery
 const {
     EXIT_STATUS_FAILURE
@@ -14,6 +15,7 @@ module.exports = {
     getApps,
     doQuery
 }
+var sleep_time = 10000;
 
 async function getInstance(username, password) {
     return new Promise((resolve, reject) => {
@@ -32,9 +34,16 @@ async function getInstance(username, password) {
 
 async function getCurrentProvider(instance) {
     return new Promise((resolve, reject) => {
-        instance.getAPIURL('https://analytics.itunes.apple.com/analytics/api/v1/settings/user-info', function (error, result) {
+        instance.getAPIURL('https://analytics.itunes.apple.com/analytics/api/v1/settings/user-info', async function (error, result) {
             if (error) {
-                reject(error)
+                if (error.statusCode === 429){
+                    console.log('Reach rate when getting current provider, wait and retry')
+                    await sleep(sleep_time)
+                    resolve(await getCurrentProvider(instance))
+                }
+                else {
+                    reject(error)
+                }
             } else {
                 var provider = { providerId: result.providerId, providerName: result.providerName }
                 resolve(provider)
@@ -45,9 +54,16 @@ async function getCurrentProvider(instance) {
 
 async function getAllProviders(instance) {
     return new Promise((resolve, reject) => {
-        instance.getAPIURL('https://analytics.itunes.apple.com/analytics/api/v1/settings/user-info', function (error, result) {
+        instance.getAPIURL('https://analytics.itunes.apple.com/analytics/api/v1/settings/user-info', async function (error, result) {
             if (error) {
-                reject(error)
+                if (error.statusCode === 429){
+                    console.log('Reach rate limit when getting provider list, wait and retry')
+                    await sleep(sleep_time)
+                    resolve(await getAllProviders(instance))
+                }
+                else {
+                    reject(error)
+                }
             } else {
                 var providers = result.contentProviders.map(function (item) {
                     return item.providerId
@@ -60,9 +76,16 @@ async function getAllProviders(instance) {
 
 function changeProvider(instance, providerId) {
     return new Promise((resolve, reject) => {
-        instance.changeProvider(providerId, function (error) {
+        instance.changeProvider(providerId, async function (error) {
             if (error) {
-                reject(error)
+                if (error.statusCode === 429){
+                    console.log('Reach rate limit when changing provider: ', providerId, ', wait and retry')
+                    await sleep(sleep_time)
+                    resolve(await changeProvider(instance, providerId))
+                }
+                else {
+                    reject(error)
+                }
             } else {
                 console.log('Provider changed successfully.');
                 resolve()
@@ -73,9 +96,16 @@ function changeProvider(instance, providerId) {
 
 async function getApps(instance, providerId) {
     return new Promise((resolve, reject) => {
-        instance.getApps(function (error, result) {
+        instance.getApps(async function (error, result) {
             if (error) {
-                reject(error)
+                if (error.statusCode === 429){
+                    console.log('Reach rate limit when get app of provider: ', providerId, ', wait and retry')
+                    await sleep(sleep_time)
+                    resolve(await getApps(instance, providerId))
+                }
+                else {
+                    reject(error)
+                }
             } else {
                 var values = []
 
@@ -110,9 +140,16 @@ async function getApps(instance, providerId) {
 // Get installs for each day in date range 2016-04-10 to 2016-05-10
 async function doQuery(instance, query) {
     return new Promise((resolve, reject) => {
-        instance.request(query, function (error, result) {
+        instance.request(query, async function (error, result) {
             if (error) {
-                reject(error)
+                if (error.statusCode === 429){
+                    console.log('Reach rate limit when do query: ', query.adamId ,', wait and retry')
+                    await sleep(sleep_time)
+                    resolve(await doQuery(instance, query))
+                }
+                else {
+                    reject(error)
+                }
             } else {
                 // console.log(JSON.stringify(query, null, 2))
                 var options = {
