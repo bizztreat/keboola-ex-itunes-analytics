@@ -1,6 +1,6 @@
 {
   "name": "keboola-app-itunes-analytics",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A simple apps that connects iTunes Analytics API with Keboola Connection",
   "main": "run.js",
   "scripts": {
