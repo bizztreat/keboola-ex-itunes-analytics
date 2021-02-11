@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const itc = require('itunesconnectanalytics')
 const Itunes = itc.Itunes
-var sleep = require('system-sleep');
+// var sleep = require('system-sleep');
 const AnalyticsQuery = itc.AnalyticsQuery
 const {
     EXIT_STATUS_FAILURE
@@ -16,6 +16,10 @@ module.exports = {
     doQuery
 }
 var sleep_time = 10000;
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
 async function getInstance(username, password) {
     return new Promise((resolve, reject) => {

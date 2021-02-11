@@ -2,7 +2,6 @@ const _ = require('lodash')
 const path = require('path')
 const constants = require('./constants')
 const itc = require('itunesconnectanalytics')
-var sleep = require('system-sleep');
 const AnalyticsQuery = itc.AnalyticsQuery
 const { getConfig, parseConfiguration } = require('./helpers/configHelper')
 const { generateCsvFile, generateManifests } = require('./helpers/csvHelper')
@@ -16,6 +15,11 @@ const { getInstance, getCurrentProvider, getAllProviders, changeProvider, getApp
  * @param {string} dataDir - input directory.
  * @returns {undefined}
  */
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 module.exports = async (dataDir) => {
     const configFile = path.join(dataDir, constants.CONFIG_FILE)
     const outputFilesDir = path.join(dataDir, constants.OUTPUT_FILES_DIR)
@@ -36,7 +40,7 @@ module.exports = async (dataDir) => {
 
         if(_.isUndefined(currentProvider.providerId)) {
             console.error("WARNING: No provided received. Sleeping few seconds and relogin.")
-            sleep(5000)
+            await sleep(5000)
             connector = await getInstance(config.username, config.password)
             currentProvider = await getCurrentProvider(connector)
         }
@@ -63,7 +67,7 @@ module.exports = async (dataDir) => {
             var pApps = await getApps(connector, currentProvider.providerId)
             if(_.isEmpty(pApps)) {
                 console.error("WARNING: No apps received. Sleeping few seconds and try again.")
-                sleep(3000)
+                await sleep(3000)
                 pApps = await getApps(connector, currentProvider.providerId)
             }
             apps = apps.concat(pApps)
