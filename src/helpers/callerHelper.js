@@ -38,7 +38,7 @@ async function getInstance(username, password) {
 
 async function getCurrentProvider(instance) {
     return new Promise((resolve, reject) => {
-        instance.getAPIURL('https://analytics.itunes.apple.com/analytics/api/v1/settings/user-info', async function (error, result) {
+        instance.getAPIURL('https://appstoreconnect.apple.com/analytics/api/v1/settings/user-info', async function (error, result) {
             if (error) {
                 if (error.statusCode === 429){
                     console.log('Reach rate when getting current provider, wait and retry')
@@ -58,7 +58,7 @@ async function getCurrentProvider(instance) {
 
 async function getAllProviders(instance) {
     return new Promise((resolve, reject) => {
-        instance.getAPIURL('https://analytics.itunes.apple.com/analytics/api/v1/settings/user-info', async function (error, result) {
+        instance.getAPIURL('https://appstoreconnect.apple.com/analytics/api/v1/settings/user-info', async function (error, result) {
             if (error) {
                 if (error.statusCode === 429){
                     console.log('Reach rate limit when getting provider list, wait and retry')

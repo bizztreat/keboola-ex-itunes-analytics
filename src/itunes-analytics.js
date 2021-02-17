@@ -29,7 +29,7 @@ module.exports = async (dataDir) => {
         var apps = []
         var values = []
 
-        console.log("Version: 2.0.2")
+        console.log("Version: 2.0.3")
         console.log(`Changed In Last ${config.changedInLastDays} Days.`)
         console.log(`Provider(s): ${config.providers}`)
         console.log(`Metric(s): ${config.metrics}`)
@@ -97,6 +97,7 @@ module.exports = async (dataDir) => {
         process.exit(constants.EXIT_STATUS_SUCCESS)
     } catch (error) {
         console.error(error.message ? error.message : error)
+        console.error(error.stack)
         process.exit(constants.EXIT_STATUS_FAILURE)
     }
 }
