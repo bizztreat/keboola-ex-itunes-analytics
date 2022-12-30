@@ -17,7 +17,7 @@
     "fast-csv": "^4.3.6",
     "is-there": "^4.5.1",
     "itunesconnectanalytics": "git+https://github.com/doguh/iTunesConnectAnalytics.git#9ae1c4a02266c3d3b3934a1de7d9fbaa0279f099",
-    "json2csv": "^3.11.5",
+    "json2csv": "^5.0.7",
     "jsonfile": "^4.0.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
